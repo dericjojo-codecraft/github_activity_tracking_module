@@ -1,5 +1,3 @@
-alert("JS is linked!");
-
 async function fetchContributions() {
     const query = `
     {
