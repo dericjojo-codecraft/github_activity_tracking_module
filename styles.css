@@ -1,0 +1,58 @@
+:root {
+    --bg-color: #0d1117;
+    --text-color: #adbac7;
+    --lvl-0: #161b22;
+    --lvl-1: #0e4429;
+    --lvl-2: #006d32;
+    --lvl-3: #26a641;
+    --lvl-4: #39d353;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid #30363d;
+}
+
+.graph {
+    display: grid;
+    grid-template-columns: repeat(53, 12px); /* 53 weeks */
+    grid-template-rows: repeat(7, 12px);    /* 7 days */
+    gap: 3px;
+    margin-top: 20px;
+}
+
+.sq {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background-color: var(--lvl-0);
+}
+
+/* Intensity Levels */
+.level-0 { background-color: var(--lvl-0); }
+.level-1 { background-color: var(--lvl-1); }
+.level-2 { background-color: var(--lvl-2); }
+.level-3 { background-color: var(--lvl-3); }
+.level-4 { background-color: var(--lvl-4); }
+
+.legend {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    margin-top: 15px;
+    justify-content: flex-end;
+}
