@@ -1,26 +1,33 @@
-// server.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const fetch = require('node-fetch');
+// If you are on Node v18+, you don't even need node-fetch! 
+// But if you do, this wrapper handles both versions:
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const app = express();
-app.use(cors()); // This allows your HTML to talk to this server
-
-const PORT = 3000;
+app.use(cors());
 
 app.get('/api/contributions', async (req, res) => {
-    const query = `
-    {
-      user(login: "${process.env.USERNAME}") {
-        contributionsCollection {
-          contributionCalendar {
-            totalContributions
-            weeks { contributionDays { contributionCount date } }
-          }
-        }
-      }
-    }`;
+    console.log("Server received request for contributions...");
+
+    const query = JSON.stringify({
+        query: `{
+            user(login: "${process.env.USERNAME}") {
+                contributionsCollection {
+                    contributionCalendar {
+                        totalContributions
+                        weeks {
+                            contributionDays {
+                                contributionCount
+                                date
+                            }
+                        }
+                    }
+                }
+            }
+        }`
+    });
 
     try {
         const response = await fetch('https://api.github.com/graphql', {
@@ -28,14 +35,25 @@ app.get('/api/contributions', async (req, res) => {
             headers: {
                 'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
                 'Content-Type': 'application/json',
+                'User-Agent': 'NodeJS-Server' // GitHub sometimes requires a User-Agent
             },
-            body: JSON.stringify({ query }),
+            body: query,
         });
+
         const data = await response.json();
-        res.json(data); // Send ONLY the data to the browser
+
+        if (data.errors) {
+            console.error("GitHub API Error Details:", data.errors);
+            return res.status(500).json({ error: "GitHub API error", details: data.errors });
+        }
+
+        console.log("Success: Data fetched from GitHub");
+        res.json(data);
+
     } catch (err) {
-        res.status(500).json({ error: "Failed to fetch GitHub data" });
+        console.error("Server Crash Detail:", err);
+        res.status(500).json({ error: "Internal Server Error", message: err.message });
     }
 });
 
-app.listen(PORT, () => console.log(`Proxy server running on http://localhost:${PORT}`));
+app.listen(3000, () => console.log('Proxy server running on http://localhost:3000'));

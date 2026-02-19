@@ -1,32 +1,16 @@
 async function fetchContributions() {
-    const query = `
-    {
-      user(login: "${USERNAME}") {
-        contributionsCollection {
-          contributionCalendar {
-            totalContributions
-            weeks {
-              contributionDays {
-                contributionCount
-                date
-              }
-            }
-          }
-        }
-      }
-    }`;
-
-    const response = await fetch('https://api.github.com/graphql', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${GITHUB_TOKEN}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query }),
-    });
-
-    const data = await response.json();
-    renderGraph(data.data.user.contributionsCollection.contributionCalendar);
+    try {
+        // We fetch from your local server, not GitHub!
+        const response = await fetch('http://localhost:3000/api/contributions');
+        const result = await response.json();
+        
+        // Based on the JSON you shared, the path is result.data.user...
+        const calendar = result.data.user.contributionsCollection.contributionCalendar;
+        
+        renderGraph(calendar);
+    } catch (err) {
+        console.error("Frontend Error:", err);
+    }
 }
 
 function renderGraph(calendar) {
