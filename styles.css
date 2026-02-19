@@ -20,10 +20,11 @@ body {
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-color);/*rgba(255, 255, 255, 0.05);*/
     padding: 2rem;
     border-radius: 12px;
-    border: 1px solid #30363d;
+    box-shadow:  26px 26px 53px #080a0e,
+             -26px -26px 53px #121820;
 }
 
 .graph {
